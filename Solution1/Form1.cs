@@ -39,7 +39,7 @@ namespace Solution1
 
         public string ReverseWords(string originalString)
         {
-
+            
             char[] stringArray = originalString.ToCharArray();
             Array.Reverse(stringArray);
             string reversedStr = new string(stringArray);
