@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             label1 = new Label();
-            Words = new TextBox();
             tableLayoutPanel1 = new TableLayoutPanel();
+            button1 = new Button();
             Reverse_Button = new Button();
             label2 = new Label();
-            button1 = new Button();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -42,19 +42,10 @@
             label1.AutoSize = true;
             label1.Location = new Point(12, 9);
             label1.Name = "label1";
-            label1.Size = new Size(66, 15);
+            label1.Size = new Size(93, 15);
             label1.TabIndex = 0;
-            label1.Text = "Enter Word";
+            label1.Text = "Reversing words";
             label1.Click += label1_Click;
-            // 
-            // Words
-            // 
-            Words.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Words.Location = new Point(12, 27);
-            Words.Name = "Words";
-            Words.Size = new Size(801, 23);
-            Words.TabIndex = 1;
-            Words.TextChanged += Words_TextChanged;
             // 
             // tableLayoutPanel1
             // 
@@ -64,18 +55,30 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 195F));
             tableLayoutPanel1.Controls.Add(button1, 1, 0);
             tableLayoutPanel1.Controls.Add(Reverse_Button, 0, 0);
-            tableLayoutPanel1.Location = new Point(132, 512);
+            tableLayoutPanel1.Location = new Point(132, 580);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Size = new Size(372, 57);
+            tableLayoutPanel1.Size = new Size(365, 56);
             tableLayoutPanel1.TabIndex = 2;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.Location = new Point(176, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(186, 50);
+            button1.TabIndex = 4;
+            button1.Text = "Clean";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
             // 
             // Reverse_Button
             // 
+            Reverse_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Reverse_Button.Location = new Point(3, 3);
             Reverse_Button.Name = "Reverse_Button";
-            Reverse_Button.Size = new Size(170, 51);
+            Reverse_Button.Size = new Size(164, 50);
             Reverse_Button.TabIndex = 0;
             Reverse_Button.Text = "Reverse";
             Reverse_Button.UseVisualStyleBackColor = true;
@@ -90,24 +93,13 @@
             label2.TabIndex = 3;
             label2.Click += label2_Click;
             // 
-            // button1
-            // 
-            button1.Location = new Point(180, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(186, 51);
-            button1.TabIndex = 4;
-            button1.Text = "Clean";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click_1;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(825, 581);
+            ClientSize = new Size(817, 680);
             Controls.Add(label2);
             Controls.Add(tableLayoutPanel1);
-            Controls.Add(Words);
             Controls.Add(label1);
             Name = "Form1";
             Text = "Form1";
@@ -119,10 +111,10 @@
         #endregion
 
         private Label label1;
-        private TextBox Words;
         private TableLayoutPanel tableLayoutPanel1;
         private Button Reverse_Button;
         private Label label2;
         private Button button1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

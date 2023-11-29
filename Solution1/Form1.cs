@@ -5,41 +5,41 @@ namespace Solution1
     public partial class Form1 : Form
     {
 
-        string TextFile = @"C:\Test\test.txt";
-        string OutputFile = @"C:\Test\Output.txt";
+        string TextFile = @"C:\Test\in.txt";
+        string OutputFile = @"C:\Test\out.txt";
         public Form1()
         {
             InitializeComponent();
         }
-       /* public string ReverseWords(string originalString)
-        {
-            StringBuilder reverseWordString = new StringBuilder();
-            List<char> charlist = new List<char>();
+        /* public string ReverseWords(string originalString)
+         {
+             StringBuilder reverseWordString = new StringBuilder();
+             List<char> charlist = new List<char>();
 
-            for (int i = 0; i < originalString.Length; i++)
-            {
-                if (originalString[i] == ' ' || i == originalString.Length - 1)
-                {
-                    if (i == originalString.Length - 1)
-                        charlist.Add(originalString[i]);
-                    for (int j = charlist.Count - 1; j >= 0; j--)
-                        reverseWordString.Append(charlist[j]);
+             for (int i = 0; i < originalString.Length; i++)
+             {
+                 if (originalString[i] == ' ' || i == originalString.Length - 1)
+                 {
+                     if (i == originalString.Length - 1)
+                         charlist.Add(originalString[i]);
+                     for (int j = charlist.Count - 1; j >= 0; j--)
+                         reverseWordString.Append(charlist[j]);
 
-                    reverseWordString.Append(' ');
-                    charlist = new List<char>();
-                }
-                else
-                {
-                    charlist.Add(originalString[i]);
-                }
-            }
+                     reverseWordString.Append(' ');
+                     charlist = new List<char>();
+                 }
+                 else
+                 {
+                     charlist.Add(originalString[i]);
+                 }
+             }
 
-            return reverseWordString.ToString();
-        }*/
+             return reverseWordString.ToString();
+         }*/
 
         public string ReverseWords(string originalString)
         {
-            
+
             char[] stringArray = originalString.ToCharArray();
             Array.Reverse(stringArray);
             string reversedStr = new string(stringArray);
@@ -56,34 +56,71 @@ namespace Solution1
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
+        //private void button1_Click(object sender, EventArgs e)
+        //{
 
-            if (File.Exists(TextFile))
+        //    if (File.Exists(TextFile))
+        //    {
+        //        string[] originalString = File.ReadAllLines(TextFile);
+        //        string[] strings = new string[originalString.Length];
+        //        for (int i = 0; i < originalString.Length; i++)
+        //        {
+        //            strings[i] = ReverseWords(originalString[i]);
+        //        }
+        //        string result = string.Join("\r\n", strings);
+        //        //label2.Text = result;
+        //        try
+        //        {
+        //            // Create a StreamWriter to write to the file
+        //            using (StreamWriter writer = new StreamWriter(OutputFile))
+        //            {
+        //                // Write the text to the file
+        //                writer.WriteLine(result);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine("An error occurred: " + ex.Message);
+        //        }
+        //    }
+
+        //}
+
+
+        private async void button1_Click(ByVal As sender System.Object,object sender, EventArgs e)
+        {
+            try
             {
-                string[] originalString = File.ReadAllLines(TextFile);
-                string[] strings = new string[originalString.Length];
-                for (int i = 0;i < originalString.Length;i++)
+                using (var httpClient = new HttpClient())
                 {
-                    strings[i] = ReverseWords(originalString[i]);
-                }
-                string result= string.Join("\r\n", strings);
-                label2.Text = result;
-                try
-                {
-                    // Create a StreamWriter to write to the file
-                    using (StreamWriter writer = new StreamWriter(OutputFile))
+                    var fileContent = File.ReadAllBytes(TextFile);
+                    var fileContentByteArray = new ByteArrayContent(fileContent);
+
+                    using (var formData = new MultipartFormDataContent())
                     {
-                        // Write the text to the file
-                        writer.WriteLine(result);
+                        formData.Add(fileContentByteArray, "file", "in.txt");
+
+                        var response = await httpClient.PostAsync("https://localhost:7132/api/file/upload", formData);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var reversedContent = await response.Content.ReadAsStringAsync();
+
+                            // Save the reversed content to out.txt
+                            File.WriteAllText(OutputFile, reversedContent);
+
+                            Console.WriteLine("File content reversed and saved.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: " + response.ReasonPhrase);
+                        }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error occurred: " + ex.Message);
-                }
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
         }
 
         private void Words_TextChanged(object sender, EventArgs e)
