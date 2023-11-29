@@ -87,34 +87,48 @@ namespace Solution1
         //}
 
 
-        private async void button1_Click(ByVal As sender System.Object,object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             try
             {
-                using (var httpClient = new HttpClient())
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.Title = "Select a text file";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    var fileContent = File.ReadAllBytes(TextFile);
-                    var fileContentByteArray = new ByteArrayContent(fileContent);
+                    string selectedFile = openFileDialog.FileName;
 
-                    using (var formData = new MultipartFormDataContent())
+                    using (var httpClient = new HttpClient())
                     {
-                        formData.Add(fileContentByteArray, "file", "in.txt");
+                        var fileContent = File.ReadAllBytes(selectedFile);
+                        var fileContentByteArray = new ByteArrayContent(fileContent);
 
-                        var response = await httpClient.PostAsync("https://localhost:7132/api/file/upload", formData);
-                        if (response.IsSuccessStatusCode)
+                        using (var formData = new MultipartFormDataContent())
                         {
-                            var reversedContent = await response.Content.ReadAsStringAsync();
+                            formData.Add(fileContentByteArray, "file", Path.GetFileName(selectedFile));
 
-                            // Save the reversed content to out.txt
-                            File.WriteAllText(OutputFile, reversedContent);
+                            var response = await httpClient.PostAsync("https://localhost:7132/api/file/upload", formData);
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var reversedContent = await response.Content.ReadAsStringAsync();
 
-                            Console.WriteLine("File content reversed and saved.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error: " + response.ReasonPhrase);
+                                // Save the reversed content to out.txt
+                                string outputFilePath = Path.Combine(Path.GetDirectoryName(selectedFile), "out.txt");
+                                File.WriteAllText(outputFilePath, reversedContent);
+
+                                Console.WriteLine("File content reversed and saved.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Error: " + response.ReasonPhrase);
+                            }
                         }
                     }
+                }
+                else
+                {
+                    Console.WriteLine("No file selected.");
                 }
             }
             catch (Exception ex)
@@ -122,6 +136,7 @@ namespace Solution1
                 Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
+
 
         private void Words_TextChanged(object sender, EventArgs e)
         {
